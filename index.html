@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Jóvenes Saludables, Mentes Brillantes</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(to right, #a8edea, #fed6e3);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .contenedor {
+      background: white;
+      width: 80%;
+      height: 80%;
+      border-radius: 15px;
+      display: flex;
+      box-shadow: 0px 4px 20px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    /* Menú lateral */
+    .menu {
+      width: 220px;
+      background: #2f855a;
+      color: white;
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .menu h2 {
+      margin-bottom: 20px;
+    }
+
+    .menu button {
+      background: none;
+      border: none;
+      color: white;
+      text-align: left;
+      width: 180px;
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px 0;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .menu button img {
+      width: 20px;
+      margin-right: 10px;
+    }
+
+    .menu button:hover {
+      background: rgba(255,255,255,0.2);
+      border-radius: 6px;
+    }
+
+    /* Área de contenido */
+    .contenido {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    h1 {
+      color: #2f855a;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin: 10px 0 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button.enviar {
+      background: linear-gradient(to right, #38a169, #3182ce);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button.enviar:hover {
+      background: linear-gradient(to right, #2f855a, #2b6cb0);
+    }
+
+    /* Login */
+    #login {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+      width: 350px;
+      text-align: center;
+    }
+
+    #historial pre {
+      background: #f7f7f7;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <!-- LOGIN -->
+  <div id="login">
+    <h1>Iniciar Sesión</h1>
+    <label for="usuario">Usuario:</label>
+    <input type="text" id="usuario" placeholder="Usuario">
+
+    <label for="password">Contraseña:</label>
+    <input type="password" id="password" placeholder="Contraseña">
+
+    <button class="enviar" onclick="login()">Entrar</button>
+  </div>
+
+  <!-- SISTEMA -->
+  <div class="contenedor" id="sistema" style="display:none;">
+    <!-- Menú lateral -->
+    <div class="menu">
+      <h2>Menú</h2>
+      <button onclick="mostrar('principal')"><img src="https://cdn-icons-png.flaticon.com/512/1946/1946436.png">Inicio</button>
+      <button onclick="mostrar('peso')"><img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png">Agregar Peso</button>
+      <button onclick="mostrar('historial')"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">Historial</button>
+      <button onclick="cerrarSesion()"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828490.png">Cerrar Sesión</button>
+    </div>
+
+    <!-- Contenido -->
+    <div class="contenido">
+      <!-- Formulario principal -->
+      <div id="principal">
+        <h1>Jóvenes Saludables, Mentes Brillantes</h1>
+
+        <label for="alimentos">Alimentos consumidos:</label>
+        <textarea id="alimentos"></textarea>
+
+        <label for="descanso">Horas de sueño:</label>
+        <input type="number" id="descanso">
+
+        <label for="calorias">Calorías consumidas:</label>
+        <input type="number" id="calorias">
+
+        <label for="ejercicio">Ejercicio realizado:</label>
+        <input type="text" id="ejercicio">
+
+        <label for="estado">Cómo te sentiste hoy (elige o escribe):</label>
+        <select id="estado">
+          <option>Feliz</option>
+          <option>Tranquilo</option>
+          <option>Cansado</option>
+          <option>Estresado</option>
+        </select>
+        <input type="text" id="estadoLibre" placeholder="Escribe cómo te sentiste">
+
+        <button class="enviar" onclick="guardar()">Guardar Registro</button>
+      </div>
+
+      <!-- Control de peso -->
+      <div id="peso" style="display:none;">
+        <h1>Control de Peso</h1>
+        <label for="pesoInput">Peso actual (kg):</label>
+        <input type="number" id="pesoInput">
+        <button class="enviar" onclick="guardarPeso()">Guardar Peso</button>
+      </div>
+
+      <!-- Historial -->
+      <div id="historial" style="display:none;">
+        <h1>Historial</h1>
+        <pre id="historialTexto"></pre>
+        <button class="enviar" onclick="descargarHistorial()">Descargar Historial</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let historial = "=== Historial de Usuario ===\n\n";
+
+    function login() {
+      const usuario = document.getElementById("usuario").value;
+      const password = document.getElementById("password").value;
+      if (usuario === "zeyla" && password === "1234") {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("sistema").style.display = "flex";
+      } else {
+        alert("Usuario o contraseña incorrectos ❌");
+      }
+    }
+
+    function mostrar(seccion) {
+      document.getElementById("principal").style.display = "none";
+      document.getElementById("peso").style.display = "none";
+      document.getElementById("historial").style.display = "none";
+      document.getElementById(seccion).style.display = "block";
+    }
+
+    function cerrarSesion() {
+      document.getElementById("sistema").style.display = "none";
+      document.getElementById("login").style.display = "block";
+    }
+
+    function guardar() {
+      const alimentos = document.getElementById("alimentos").value;
+      const descanso = document.getElementById("descanso").value;
+      const calorias = document.getElementById("calorias").value;
+      const ejercicio = document.getElementById("ejercicio").value;
+      const estado = document.getElementById("estado").value;
+      const estadoLibre = document.getElementById("estadoLibre").value;
+
+      const texto = `📅 Registro:\n🍎 Alimentos: ${alimentos}\n🛌 Sueño: ${descanso} horas\n🔥 Calorías: ${calorias}\n💪 Ejercicio: ${ejercicio}\n😊 Estado: ${estado} ${estadoLibre}\n\n`;
+      historial += texto;
+      alert("✅ Registro guardado correctamente");
+    }
+
+    function guardarPeso() {
+      const peso = document.getElementById("pesoInput").value;
+      const fecha = new Date().toLocaleDateString();
+      historial += `⚖️ Peso registrado: ${peso} kg (${fecha})\n\n`;
+      alert("✅ Peso guardado");
+    }
+
+    function descargarHistorial() {
+      const blob = new Blob([historial], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "historial_salud.txt";
+      link.click();
+    }
+  </script>
+</body>
+</html>
