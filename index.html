@@ -26,7 +26,7 @@
 
     /* Menú lateral */
     .menu {
-      width: 220px;
+      width: 240px;
       background: #2f855a;
       color: white;
       padding-top: 20px;
@@ -44,7 +44,7 @@
       border: none;
       color: white;
       text-align: left;
-      width: 180px;
+      width: 200px;
       padding: 10px;
       font-size: 16px;
       margin: 5px 0;
@@ -120,6 +120,24 @@
       border-radius: 10px;
       text-align: left;
     }
+
+    /* Perfil usuario */
+    #usuarioInfo {
+      text-align: center;
+    }
+
+    #usuarioInfo img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+      border: 3px solid #38a169;
+    }
+
+    #usuarioInfo p {
+      font-size: 16px;
+      margin: 8px 0;
+    }
   </style>
 </head>
 <body>
@@ -140,14 +158,24 @@
     <!-- Menú lateral -->
     <div class="menu">
       <h2>Menú</h2>
+      <button onclick="mostrar('usuarioInfo')"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">Usuario</button>
       <button onclick="mostrar('principal')"><img src="https://cdn-icons-png.flaticon.com/512/1946/1946436.png">Inicio</button>
       <button onclick="mostrar('peso')"><img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png">Agregar Peso</button>
-      <button onclick="mostrar('historial')"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">Historial</button>
+      <button onclick="mostrar('historial')"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828778.png">Historial</button>
       <button onclick="cerrarSesion()"><img src="https://cdn-icons-png.flaticon.com/512/1828/1828490.png">Cerrar Sesión</button>
     </div>
 
     <!-- Contenido -->
     <div class="contenido">
+      <!-- Info Usuario -->
+      <div id="usuarioInfo" style="display:none;">
+        <h1>Perfil de Usuario</h1>
+        <img src="https://cdn-icons-png.flaticon.com/512/4140/4140037.png" alt="Perfil">
+        <p><b>Nombre:</b> Zeyla</p>
+        <p><b>Usuario:</b> zeyla</p>
+        <p><b>Fecha de ingreso:</b> <span id="fechaIngreso"></span></p>
+      </div>
+
       <!-- Formulario principal -->
       <div id="principal">
         <h1>Jóvenes Saludables, Mentes Brillantes</h1>
@@ -188,6 +216,7 @@
       <div id="historial" style="display:none;">
         <h1>Historial</h1>
         <pre id="historialTexto"></pre>
+        <button class="enviar" onclick="mostrarHistorial()">Ver Historial</button>
         <button class="enviar" onclick="descargarHistorial()">Descargar Historial</button>
       </div>
     </div>
@@ -195,6 +224,7 @@
 
   <script>
     let historial = "=== Historial de Usuario ===\n\n";
+    let fechaIngreso = "";
 
     function login() {
       const usuario = document.getElementById("usuario").value;
@@ -202,12 +232,15 @@
       if (usuario === "zeyla" && password === "1234") {
         document.getElementById("login").style.display = "none";
         document.getElementById("sistema").style.display = "flex";
+        fechaIngreso = new Date().toLocaleString();
+        document.getElementById("fechaIngreso").innerText = fechaIngreso;
       } else {
         alert("Usuario o contraseña incorrectos ❌");
       }
     }
 
     function mostrar(seccion) {
+      document.getElementById("usuarioInfo").style.display = "none";
       document.getElementById("principal").style.display = "none";
       document.getElementById("peso").style.display = "none";
       document.getElementById("historial").style.display = "none";
@@ -239,6 +272,10 @@
       alert("✅ Peso guardado");
     }
 
+    function mostrarHistorial() {
+      document.getElementById("historialTexto").innerText = historial;
+    }
+
     function descargarHistorial() {
       const blob = new Blob([historial], { type: "text/plain" });
       const link = document.createElement("a");
@@ -249,3 +286,8 @@
   </script>
 </body>
 </html>
+
+     
+
+
+
